@@ -1,5 +1,6 @@
 package ru.avdeev.android.a5_1_1_saving_a_text_file;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -30,7 +31,7 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final int REQUESTE_CODE_PERMISSION_WRITE_STORAGE=11;
+    public static final int REQUEST_CODE_PERMISSION_WRITE_STORAGE=11;
     private Random random = new Random();
     private ItemsDataAdapter adapter;
     private List<Drawable> images = new ArrayList<>();
@@ -50,18 +51,18 @@ public class MainActivity extends AppCompatActivity {
 
         fillImages();
 
-        fab.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int permissionStatus = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
-                    generateRandomItemData();
-                } else {
-                    ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUESTE_CODE_PERMISSION_WRITE_STORAGE);
-
+        final int permissionStatus = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
+            fab.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
                 }
-            }
-        });
+            });
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    REQUEST_CODE_PERMISSION_WRITE_STORAGE);
+        }
 
         adapter = new ItemsDataAdapter(this, null);
         listView.setAdapter(adapter);
@@ -96,11 +97,9 @@ public class MainActivity extends AppCompatActivity {
             try {
                 sampleWriter = new FileWriter(sampels, true);
                 if (adapter.isEmpty()) {
-                    adapter.addItem(new ItemData(
-                            images.get(random.nextInt(images.size())),
-                            "Sample" + adapter.getCount(),
-                            "Повторение - это по человечески, рекурсия божественна.", button));
-                    sampleWriter.append(adapter.toString());
+                    ItemData newItem = new ItemData(images.get(random.nextInt(images.size())), "Sample " + adapter.getCount(), "Повторение - это по человечески, рекурсия божественна.", button);
+                    adapter.addItem(newItem);
+                    sampleWriter.append(newItem.toString());
                 } else {
                     //здесь логика для считывание элементов сохраненных в файл
                 }
@@ -127,11 +126,17 @@ public class MainActivity extends AppCompatActivity {
                 Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
     private void onRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
-            case REQUESTE_CODE_PERMISSION_WRITE_STORAGE:
+            case REQUEST_CODE_PERMISSION_WRITE_STORAGE:
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-
+                generateRandomItemData();
             } else {
                 Toast.makeText(this, getText(R.string.permission_not_obtained),Toast.LENGTH_LONG).show();
                 finish();
@@ -141,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
 
     /* Checks if external storage is available for read and write */
     public boolean isExternalStorageWritable() {
-        String state=Environment.getExternalStorageState();
+        String state= String.valueOf(getExternalCacheDir());
         if (Environment.MEDIA_MOUNTED.equals(state)){
             return true;
         }return false;
