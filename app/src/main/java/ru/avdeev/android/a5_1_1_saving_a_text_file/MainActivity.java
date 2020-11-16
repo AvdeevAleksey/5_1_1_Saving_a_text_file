@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
             fab.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    generateRandomItemData();
                 }
             });
         } else {
