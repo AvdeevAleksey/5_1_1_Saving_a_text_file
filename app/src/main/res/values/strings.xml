@@ -2,4 +2,5 @@
     <string name="app_name">Сохранение текстового файла</string>
     <string name="del_button">Удалить</string>
     <string name="edd_button">Добавить</string>
+    <string name="permission_not_obtained">Разрешение на запись файла не предоставлено</string>
 </resources>
