@@ -95,11 +95,15 @@ public class MainActivity extends AppCompatActivity {
             FileWriter sampleWriter = null;
             try {
                 sampleWriter = new FileWriter(sampels, true);
-                adapter.addItem(new ItemData(
-                        images.get(random.nextInt(images.size())),
-                        "Sample" + adapter.getCount(),
-                        "Повторение - это по человечески, рекурсия божественна.", button));
-                sampleWriter.append(adapter.toString());
+                if (adapter.isEmpty()) {
+                    adapter.addItem(new ItemData(
+                            images.get(random.nextInt(images.size())),
+                            "Sample" + adapter.getCount(),
+                            "Повторение - это по человечески, рекурсия божественна.", button));
+                    sampleWriter.append(adapter.toString());
+                } else {
+                    //здесь логика для считывание элементов сохраненных в файл
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
