@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    private void onRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults) {
+   public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
             case REQUEST_CODE_PERMISSION_WRITE_STORAGE:
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
 
     /* Checks if external storage is available for read and write */
     public boolean isExternalStorageWritable() {
-        String state= String.valueOf(getExternalCacheDir());
+        String state=Environment.getExternalStorageState();
         if (Environment.MEDIA_MOUNTED.equals(state)){
             return true;
         }return false;
