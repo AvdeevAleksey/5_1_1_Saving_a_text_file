@@ -37,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
     private List<Drawable> images = new ArrayList<>();
     private Button button;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,19 +50,21 @@ public class MainActivity extends AppCompatActivity {
 
         fillImages();
 
-        final int permissionStatus = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
-            fab.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    generateRandomItemData();
-                }
-            });
-        } else {
-            ActivityCompat.requestPermissions(this,
-                    new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    REQUEST_CODE_PERMISSION_WRITE_STORAGE);
-        }
+        fab.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                generateRandomItemData();
+            }
+        });
+
+//        final int permissionStatus = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+//        if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
+//
+//        } else {
+//            ActivityCompat.requestPermissions(this,
+//                    new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE},
+//                    REQUEST_CODE_PERMISSION_WRITE_STORAGE);
+//        }
 
         adapter = new ItemsDataAdapter(this, null);
         listView.setAdapter(adapter);
@@ -92,31 +93,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void generateRandomItemData() {
-        if (isExternalStorageWritable()) {
-            File sampels = new File(getExternalFilesDir(null), "avdeev.txt");
-            FileWriter sampleWriter = null;
-            try {
-                sampleWriter = new FileWriter(sampels, true);
-                if (adapter.isEmpty()) {
-                    ItemData newItem = new ItemData(images.get(random.nextInt(images.size())), "Sample " + adapter.getCount(), "Повторение - это по человечески, рекурсия божественна.", button);
-                    adapter.addItem(newItem);
-                    sampleWriter.append(newItem.toString());
-                } else {
-                    //здесь логика для считывание элементов сохраненных в файл
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    sampleWriter.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        } else {
-
-        }
+        adapter.addItem(new ItemData(images.get(random.nextInt(images.size())),
+                "Sample " + adapter.getCount(),
+                "Повторение - это по человечески, рекурсия божественна.",
+                button));
     }
 
     private void showItemData(int position) {

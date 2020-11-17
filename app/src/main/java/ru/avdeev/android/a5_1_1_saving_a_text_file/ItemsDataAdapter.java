@@ -84,4 +84,12 @@ public class ItemsDataAdapter extends BaseAdapter {
 
         return view;
     }
+
+    public List<String> getAdapterStrings() {
+        List<String> list = new ArrayList<>();
+        for (ItemData item : items) {
+            list.add(item.getTitle());
+        }
+        return list;
+    }
 }
