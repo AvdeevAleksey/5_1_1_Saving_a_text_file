@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private Random random = new Random();
     private ItemsDataAdapter adapter;
     private List<Drawable> images = new ArrayList<>();
+    private ExternalFile externalFile = null;
     private Button button;
 
     @Override
@@ -54,20 +55,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 generateRandomItemData();
+                externalFile.saveStringList(adapter.getAdapterStrings());
             }
         });
 
-//        final int permissionStatus = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-//        if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
-//
-//        } else {
-//            ActivityCompat.requestPermissions(this,
-//                    new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE},
-//                    REQUEST_CODE_PERMISSION_WRITE_STORAGE);
-//        }
-
-        adapter = new ItemsDataAdapter(this, null);
+        externalFile = new ExternalFile(MainActivity.this, "strings.txt");
+        adapter = new ItemsDataAdapter(this, null, externalFile);
         listView.setAdapter(adapter);
+
+        generateLoadedItemData();
 
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -94,8 +90,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void generateRandomItemData() {
         adapter.addItem(new ItemData(images.get(random.nextInt(images.size())),
-                "Sample " + adapter.getCount(),
-                "Повторение - это по человечески, рекурсия божественна.",
+                getString(R.string.title_citate) + adapter.getCount(),
+                getString(R.string.subtitle_citate),
                 button));
     }
 
@@ -118,6 +114,18 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         }
+    }
+    private void generateLoadedItemData() {
+        List<String> list = externalFile.loadStringList();
+        if (list == null) return;
+        for (String s : list) {
+            adapter.addItem(new ItemData(
+                    images.get(random.nextInt(images.size())),
+                    s,
+                    getString(R.string.subtitle_citate),
+                    button));
+        }
+        Toast.makeText(MainActivity.this, getString(R.string.subtitle_citate), Toast.LENGTH_SHORT).show();
     }
 
     /* Checks if external storage is available for read and write */

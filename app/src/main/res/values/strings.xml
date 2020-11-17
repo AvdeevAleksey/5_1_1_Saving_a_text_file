@@ -3,4 +3,8 @@
     <string name="del_button">Удалить</string>
     <string name="edd_button">Добавить</string>
     <string name="permission_not_obtained">Разрешение на запись файла не предоставлено</string>
+    <string name="file_saved">Файл %s сохранен!</string>
+    <string name="file_save_error">Ошибка сохранения файла %s!</string>
+    <string name="title_citate">Sample</string>
+    <string name="subtitle_citate">Повторение - это по человечески, рекурсия божественна.</string>
 </resources>

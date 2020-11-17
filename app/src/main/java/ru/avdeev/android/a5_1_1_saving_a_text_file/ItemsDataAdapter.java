@@ -14,11 +14,15 @@ import java.util.List;
 
 public class ItemsDataAdapter extends BaseAdapter {
 
+    Context context;
+    ExternalFile externalFile;
     private List<ItemData> items;
 
     private LayoutInflater inflater;
 
-    ItemsDataAdapter(Context context, List<ItemData> items) {
+    ItemsDataAdapter(Context context, List<ItemData> items, ExternalFile externalFile) {
+        this.context = context;
+        this.externalFile = externalFile;
         if (items == null) {
             this.items = new ArrayList<>();
         } else {
@@ -78,6 +82,7 @@ public class ItemsDataAdapter extends BaseAdapter {
             public void onClick(View view) {
                 items.remove(position);
                 notifyDataSetChanged();
+                externalFile.saveStringList(getAdapterStrings());
             }
         });
         button.setTag(position);
